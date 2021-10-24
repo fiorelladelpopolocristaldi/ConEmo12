@@ -1,0 +1,133 @@
+---
+title: "Does your past define you? The role of previous visual experience in predicting new affective pictures and sounds"
+subtitle: "Supplementary materials"
+header-includes:
+  - \setcounter{table}{0} 
+  - \renewcommand*{\thetable}{S\arabic{table}}
+  - \usepackage{pdflscape}
+  - \newcommand{\blandscape}{\begin{landscape}}
+  - \newcommand{\elandscape}{\end{landscape}}
+  - \AddToHook{cmd/section/before}{\clearpage}
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+  - \usepackage{colortbl}
+  - \usepackage{tabu}
+  - \usepackage{threeparttable}
+  - \usepackage{threeparttablex}
+  - \usepackage[normalem]{ulem}
+  - \usepackage{makecell}
+  - \usepackage{xcolor}
+output: 
+  bookdown::pdf_document2:
+    latex_engine: xelatex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+options(knitr.kable.NA = '') # for NA values in tables
+```
+
+```{r packages}
+library(tidyverse)
+library(flextable)
+library(here)
+```
+
+```{r functions}
+get_element <- function(x){
+    x %>% `[[`(1)
+}
+
+customize_table <- function(table, caption, font = 9){
+  table %>% 
+    fontsize(size = 8, part = "all") %>% 
+    set_table_properties(layout = "autofit") %>% 
+    set_caption(caption)
+}
+```
+
+```{r loading-gen-data}
+tab_stimuli <- read_rds(here("supplementary", "objects", "tab_stimuli.rds"))
+```
+
+```{r loading-data-visual}
+mod_paper_visual <- read_rds(here("objects", "obj_visual", "mod_paper.rds"))
+plot_paper_visual <- read_rds(here("objects", "obj_visual", "plot_paper.rds"))
+anova_paper_visual <- read_rds(here("objects", "obj_visual", "anova_paper.rds"))
+```
+
+```{r loading-data-auditory}
+mod_paper_auditory <- read_rds(here("objects", "obj_auditory", "mod_paper.rds"))
+plot_paper_auditory <- read_rds(here("objects", "obj_auditory", "plot_paper.rds"))
+anova_paper_auditory <- read_rds(here("objects", "obj_auditory", "anova_paper.rds"))
+```
+
+# Experiment 1
+
+## Stimuli
+
+```{r stimuli-table-visual}
+tab_stimuli$table_1 %>% set_caption(caption = "List of NAPS picture names used as S2s in Experiment 1, sorted by valence (Neg = negative, Neu = neutral).") %>% width(j = 2, 5, unit = "in") %>% fontsize(size = 8, part = "all") %>% knitr::knit_print()
+```
+
+```{r stimuli-table2-visual}
+tab_stimuli$table_2 %>% customize_table(caption = "Means (M), standard deviations (SD), and results of two-tailed t-tests assuming unequal variance in luminance, contrast, complexity indices (i.e., JPEG size, entropy), and color space indices (i.e., LABL, LABA, LABB), referred to negative (Neg) and neutral (Neu) NAPS pictures employed as S2s in Experiment 1.") %>% knitr::knit_print()
+```
+
+## Congruency model
+
+```{r cong-table-mod-visual}
+mod_paper_visual %>% 
+  dplyr::filter(names == "mod_list_cong") %>% 
+  pull(table) %>% 
+  get_element() %>% 
+  customize_table(caption = "Results of exploratory LMMs investigating the effect of S2 congruency (congruent vs. incongruent) on valence and arousal ratings in Experiment 1. SE = standard error.")
+```
+
+\newpage
+
+```{r cong-table-anova-visual}
+anova_paper_visual %>% 
+  dplyr::filter(names == "mod_list_cong") %>% 
+  pull(table) %>% 
+  get_element() %>% 
+  customize_table(caption = "Anova table of exploratory LMMs investigating the effect of S2 congruency (congruent vs. incongruent) on valence and arousal ratings in Experiment 1.")
+```
+
+# Experiment 2
+
+## Stimuli
+
+```{r stimuli-table-auditory}
+tab_stimuli$table_3 %>% set_caption(caption = "List of NAPS picture names used as S2s in Experiment 1, sorted by valence (Neg = negative, Neu = neutral).") %>% width(j = c(2,3), width = 2.5, unit = "in") %>% fontsize(size = 8, part = "all") %>% knitr::knit_print()
+```
+
+```{r stimuli-table2-auditory}
+tab_stimuli$table_4 %>% customize_table(caption = "Means (M), standard deviations (SD), and results of two-tailed t-tests assuming unequal variance in luminance, contrast, complexity indices (i.e., JPEG size, entropy), and color space indices (i.e., LABL, LABA, LABB) for affective pictures, and in physical properties (i.e., min dB, max dB, peak dB) for affective sounds, referred to negative (Neg) and neutral (Neu) NAPS pictures and IADS-2 sounds employed as S2s in Experiment 2.") %>% knitr::knit_print()
+```
+
+## Congruency model
+
+```{r cong-table-mod-auditory}
+mod_paper_auditory %>% 
+  dplyr::filter(names == "mod_list_cong") %>% 
+  pull(table) %>% 
+  get_element() %>% 
+  customize_table(caption = "Results of exploratory LMMs investigating the effect of S2 congruency (congruent vs. incongruent) on valence and arousal ratings in Experiment 2. SE = standard error.")
+```
+
+\pagebreak
+
+```{r cong-table-anova-auditory}
+anova_paper_auditory %>% 
+  dplyr::filter(names == "mod_list_cong") %>% 
+  pull(table) %>% 
+  get_element() %>% 
+  customize_table(caption = "Anova table of exploratory LMMs investigating the effect of S2 congruency (congruent vs. incongruent) on valence and arousal ratings in Experiment 2. SE = standard error.")
+```

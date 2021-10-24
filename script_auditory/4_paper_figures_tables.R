@@ -1,0 +1,179 @@
+auditory_figures_tables <- function(){
+
+## -----------------------------------------------------------------------------
+## Script: Paper figures and tables
+##
+## Date Created: 2021-09-07
+## -----------------------------------------------------------------------------
+
+
+# Packages ----------------------------------------------------------------
+
+library(tidyverse)
+library(broom)
+library(broom.mixed)
+library(ggeffects)
+library(effects)
+library(cowplot)
+library(ggthemes)
+library(flextable)
+library(officer)
+library(here)
+library(emmeans)
+
+# Functions ----------------------------------------------------------------
+
+save_table <- function(tab, prop, name){
+    save_as_docx(tab, path = name, pr_section = prop)
+}
+
+# Loading -----------------------------------------------------------------
+
+prereg_list <- read_rds(here("objects", "obj_auditory", "prereg_list.rds"))
+exp_list <- read_rds(here("objects", "obj_auditory", "expl_list.rds"))
+
+dat <- read_rds(here("data", "data_auditory", "data_no_outlier.rds"))
+dat_exp <- dat %>% dplyr::filter(cond == "exp")
+dat_val_arr <- dat %>% dplyr::filter(cond == "val_arr")
+
+# Creating custom lists
+
+mod_list_pre <- c(
+    fit_val = prereg_list$mods$fit_val,
+    fit_arr = prereg_list$mods$fit_arr,
+    fit_exp = prereg_list$mods$fit_exp
+)
+
+mod_list_cong <- c(
+    fit_arr = exp_list$arr_mods_cong$mods$fit_arr_cong,
+    fit_val = exp_list$val_mods_cong$mods$fit_val_cong
+)
+
+all_mods <- list(mod_list_pre = mod_list_pre,
+                 mod_list_cong = mod_list_cong)
+
+all_table <- tibble(
+    models = all_mods,
+    names = names(all_mods)
+)
+
+# Tables -------------------------------------------------------------------
+
+sect_properties <- prop_section(
+    page_size = page_size(orient = "landscape",
+                          width = 8.3, height = 11.7),
+    type = "continuous",
+    page_margins = page_mar()
+)
+
+# Models
+
+all_table_mod <- all_table %>%
+    mutate(tidy = map_depth(models, tidy_fit, .depth = 2),
+           tidy = map_depth(tidy, prep_names_model, .depth = 2),
+           tidy = map(tidy, bind_rows, .id = "mod"),
+           table = map(tidy, model_table),
+           save_names = str_remove(names, "mod_list_"),
+           save_names = paste0("tables/", "table_auditory/", "mod_table_", save_names, "_auditory.docx"))
+
+# Anova
+
+all_table_anova <- all_table %>%
+    mutate(tidy = map_depth(models, tidy_anova, .depth = 2),
+           tidy = map_depth(tidy, prep_names_anova, .depth = 2),
+           tidy = map(tidy, bind_rows, .id = "mod"),
+           table = map(tidy, anova_table),
+           save_names = str_remove(names, "mod_list_"),
+           save_names = paste0("tables/", "table_auditory/", "anova_table_", save_names, "_auditory.docx"))
+
+# Saving
+
+map2(all_table_mod$table, all_table_mod$save_names, function(table, name) {
+    save_table(table, prop = sect_properties, name)
+})
+
+map2(all_table_anova$table, all_table_anova$save_names, function(table, name) {
+    save_table(table, prop = sect_properties, name)
+})
+
+saveRDS(all_table_anova, file = here("objects", "obj_auditory", "anova_paper.rds"))
+saveRDS(all_table_mod, file = here("objects", "obj_auditory", "mod_paper.rds"))
+
+# Figures -----------------------------------------------------------------
+
+# Preregistration
+
+eff_exp_pre <- get_effects(all_table$models$mod_list_pre$fit_exp,
+                           y = exprating, workerId, group, s1_color)
+eff_val_pre <- get_effects(all_table$models$mod_list_pre$fit_val,
+                           y = valrating, workerId, group, valence)
+eff_arr_pre <- get_effects(all_table$models$mod_list_pre$fit_arr,
+                           y = arrating, workerId, group, valence)
+
+dat_plot_pre <- bind_rows(eff_exp_pre, eff_val_pre, eff_arr_pre) %>%
+    clean_names_plot(., mod = "prereg") %>%
+    unite(cond, valence, s1_color, sep = "")
+
+pre_plot <- box_plot(dat_plot_pre, cond)
+
+# Congruency
+
+eff_arr_cong <- get_effects(all_table$models$mod_list_cong$fit_arr, y = arrating,
+                            workerId, group, valence, Cong)
+
+eff_val_cong <- get_effects(all_table$models$mod_list_cong$fit_val, y = valrating,
+                            workerId, group, valence, Cong)
+
+dat_plot_cong <- bind_rows(eff_arr_cong, eff_val_cong) %>%
+    clean_names_plot(., mod = "cong")
+
+cong_plot <- box_plot(dat_plot_cong, valence, Cong) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Saving
+
+plot_list <- list(
+    pre_plot = pre_plot,
+    cong_plot = cong_plot
+)
+
+plot_names <- c("plot_prereg_auditory.png",
+                "plot_cong_auditory.png")
+
+plot_names <- file.path("figures", "fig_auditory", plot_names)
+
+map2(plot_names, plot_list, function(name, plot) save_plot(name, plot, base_height = 6))
+
+saveRDS(plot_list, file = here("objects", "obj_auditory", "plot_paper.rds"))
+
+# Model Info to Report ----------------------------------------------------
+
+r2_table <- all_table %>%
+    select(models, names) %>%
+    unnest(models) %>%
+    mutate(mod_names = names(models),
+           r2_marg = map_dbl(models, r2, "marg"),
+           r2_cond = map_dbl(models, r2, "cond"),
+           formula = map_chr(models, get_formula)) %>%
+    select(-models)
+
+saveRDS(r2_table, here("objects", "obj_auditory", "r2_table.rds"))
+
+# Emmeans -----------------------------------------------------------------
+
+emmeans_list <- c(
+    fit_exp =  list(prereg_list$post_hoc_effsize$post_fit_exp),
+    fit_val = list(prereg_list$post_hoc_effsize$post_fit_val),
+    fit_arr = list(prereg_list$post_hoc_effsize$post_fit_arr)
+)
+
+emmeans_tab <- tibble(
+    emmeans = emmeans_list) %>%
+    mutate(mod = names(emmeans),
+           tab = map(emmeans, table_emmeans)) %>%
+    unnest(tab) %>%
+    select(mod, group, term, contrast, estimate, std.error, df, conf.low,
+           conf.high, statistic, p.value, effect.size_es)
+
+saveRDS(emmeans_tab, file = here("objects", "obj_auditory", "emmeans_tab_prereg.rds"))
+}

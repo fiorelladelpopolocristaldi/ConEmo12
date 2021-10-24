@@ -1,0 +1,77 @@
+# --- Utils
+
+# these functions are used for the internal project organization and for running
+# each step of the analysis
+
+# run_script --------------------------------------------------------------
+
+run_script <- function(fun){
+  fun_name <- deparse(substitute(fun))
+  
+  # Running
+  suppressWarnings(suppressMessages(fun()))
+  
+  cli::cli_alert_success(paste(fun_name, "finished!"))
+}
+
+# get_packages ------------------------------------------------------------
+
+get_all_pakages <- function(folder_list, exts){
+  folder_list <- here::here(folder_list)
+  folder_list |>
+    get_relevant_file(exts) |>
+    get_all_files_content() |>
+    detect_packages() |>
+    get_pkg_name() 
+}
+
+get_pkg_name <- function(pkgs){
+  out <- stringr::str_extract(pkgs, pattern = "\\((.*?)\\)")
+  out <- stringr::str_remove_all(out, "\\(|\\)")
+  return(out)
+}
+
+detect_packages <- function(files_content){
+  index <- stringr::str_detect(files_content, "library\\(")
+  out <- files_content[index]
+  unique(out)
+}
+
+get_relevant_file <- function(folder_list, exts){
+  out <- unlist(purrr::map(folder_list, function(x) list.files(x, full.names = TRUE)))
+  pattern <- paste0(exts, collapse = "|")
+  index <- stringr::str_detect(out, pattern)
+  out[index]
+}
+
+get_all_files_content <- function(files){
+  unlist(purrr::map(files, function(x) readLines(x, warn = F)))
+}
+
+
+# put_packages_readme -----------------------------------------------------
+
+put_packages_readme <- function(){
+  
+  readme <- readLines("README.md")
+  readme <- append(readme, "\n## Packages\n")
+  
+  all_pkgs <- get_all_pakages(
+    c(
+      "script_auditory",
+      "script_visual",
+      "script_1vs2"
+    ), 
+    c(
+      ".R",
+      ".Rmd"
+    )
+  )
+  
+  all_pkgs <- paste("-", all_pkgs)
+  
+  readme <- append(readme, all_pkgs)
+  
+  writeLines(readme, "README.md")
+  
+}
