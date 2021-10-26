@@ -23,7 +23,7 @@ header-includes:
   - \usepackage{xcolor}
 output: 
   bookdown::pdf_document2:
-    latex_engine: xelatex
+    latex_engine: lualatex
 ---
 
 ```{r setup, include=FALSE}
