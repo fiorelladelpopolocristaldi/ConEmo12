@@ -119,6 +119,7 @@ cook_table <- bind_rows(cook_list, .id = "mod")
 cook_table <- cook_table %>%
   mutate(out = ifelse(cook > cut_off_cook, TRUE, FALSE))
 
+
 # Visualizing outliers ----------------------------------------------------
 
 filter_outliers <- function(out_data, resp = "all"){
@@ -235,7 +236,7 @@ dat_no_out <- dat %>%
 outliers <- list(
     out_mad = out_mad,
     out_mcd = out_mcd,
-    cook_tab = cook_tab
+    cook_table = cook_table
 )
 
 saveRDS(outliers, here("objects", "obj_auditory", "prereg_outliers.rds"))
