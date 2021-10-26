@@ -1,5 +1,3 @@
-visual_outliers <- function(){ 
-
 # Environment -------------------------------------------------------------
 
 library(lme4)
@@ -194,5 +192,3 @@ outliers <- list(
 
 saveRDS(outliers, here("objects", "obj_visual", "prereg_outliers.rds"))
 saveRDS(dat_no_out, here("data", "data_visual", "data_no_outlier.rds"))
-
-}

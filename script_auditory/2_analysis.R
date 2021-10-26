@@ -1,11 +1,3 @@
-auditory_analysis <- function(){
-
-## ------------------------------------------------------------------------
-## Project: Study2
-##
-## Script: analysis
-## ------------------------------------------------------------------------
-
 # Environment -------------------------------------------------------------
 
 library(tidyverse)
@@ -86,4 +78,3 @@ prereg_list <- list(
 )
 
 saveRDS(prereg_list, file = here("objects", "obj_auditory", "prereg_list.rds"))
-}

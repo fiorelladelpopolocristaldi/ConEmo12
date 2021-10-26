@@ -1,5 +1,3 @@
-visual_exploratory <- function(){
-
 # Environment -------------------------------------------------------------
 
 library(tidyverse)
@@ -75,4 +73,3 @@ exp_analysis <- list(
 )
 
 saveRDS(exp_analysis, file = here("objects", "obj_visual", "expl_list.rds"))
-}

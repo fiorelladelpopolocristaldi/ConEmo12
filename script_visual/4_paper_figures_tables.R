@@ -1,11 +1,3 @@
-visual_figures_tables <- function(){
-
-## -----------------------------------------------------------------------------
-## Script: Paper figures and tables
-##
-## Date Created: 2021-09-07
-## -----------------------------------------------------------------------------
-
 # Packages ----------------------------------------------------------------
 
 library(tidyverse)
@@ -177,4 +169,3 @@ emmeans_tab <- emmeans_tab %>%
            conf.high, statistic, p.value, effect.size_es)
 
 saveRDS(emmeans_tab, file = here("objects", "obj_visual", "emmeans_tab_prereg.rds"))
-}

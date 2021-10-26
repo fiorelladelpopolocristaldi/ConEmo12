@@ -1,11 +1,3 @@
-auditory_exploratory <- function(){
-
-## ------------------------------------------------------------------------
-## Project: Study2
-##
-## Script: exploratory
-## ------------------------------------------------------------------------
-
 # Environment -------------------------------------------------------------
 
 library(tidyverse)
@@ -21,7 +13,7 @@ library(here)
 # This is a list of functions that are applied to all models
 # if a function is added here, it will be applied later
 
-fun_list <- list(anova_table = get_anova_table) # broom::tidy(anova(fit))
+fun_list <- list(anova_table = function(x) broom::tidy(anova(x)))
 
 # This apply the list of fun to all models within another list
 
@@ -83,4 +75,3 @@ exp_analysis <- list(
 )
 
 saveRDS(exp_analysis, file = here("objects", "obj_auditory", "expl_list.rds"))
-}

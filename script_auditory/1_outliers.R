@@ -1,11 +1,3 @@
-auditory_outliers <- function(){
-
-## ------------------------------------------------------------------------
-## Project: Study2_auditory
-##
-## Script: outliers
-## ------------------------------------------------------------------------
-
 # Environment -------------------------------------------------------------
 
 library(lme4)
@@ -248,4 +240,3 @@ outliers <- list(
 
 saveRDS(outliers, here("objects", "obj_auditory", "prereg_outliers.rds"))
 saveRDS(dat_no_out, here("data", "data_auditory", "data_no_outlier.rds"))
-}

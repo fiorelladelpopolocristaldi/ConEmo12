@@ -1,5 +1,3 @@
-visual_analysis <- function(){
-
 # Environment -------------------------------------------------------------
 
 library(tidyverse)
@@ -71,4 +69,3 @@ prereg_list <- list(
 )
 
 saveRDS(prereg_list, file = here("objects", "obj_visual", "prereg_list.rds"))
-}

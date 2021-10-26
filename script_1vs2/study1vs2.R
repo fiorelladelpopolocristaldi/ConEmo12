@@ -1,11 +1,3 @@
-study_1vs2_analysis <- function(){
-
-## ------------------------------------------------------------------------
-## Project: Study2
-##
-## Script: Study 1 vs Study 2
-## ------------------------------------------------------------------------
-
 # Environment -------------------------------------------------------------
 
 library(tidyverse)
@@ -135,7 +127,7 @@ r2_table <- tibble(
 
 # Anova
 
-anova_models_st <- map(mods_st, get_anova_table)
+anova_models_st <- map(mods_st, function(x) broom.mixed::tidy(anova(x)))
 
 # Post-Hoc Contrast
 
@@ -164,4 +156,3 @@ prereg_list_st <- list(
 )
 
 saveRDS(prereg_list_st, file = here("objects", "obj_12", "prereg_studies_list.rds"))
-}
