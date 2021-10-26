@@ -40,10 +40,7 @@ get_all_files_content <- function(files){
 
 # put_packages_readme -----------------------------------------------------
 
-put_packages_readme <- function(){
-  
-  readme <- readLines("README.md")
-  readme <- append(readme, "\n## Packages\n")
+get_all_packages <- function(){
   
   all_pkgs <- get_all_pakages(
     c(
@@ -60,9 +57,7 @@ put_packages_readme <- function(){
   all_pkgs <- paste0("`", all_pkgs, "`")
   all_pkgs <- paste("-", all_pkgs)
   
-  readme <- append(readme, all_pkgs)
-  
-  writeLines(readme, "README.md")
+  return(all_pkgs)
   
 }
 
@@ -85,5 +80,21 @@ run_script <- function(file, analysis = c("visual", "auditory", "1vs2")){
   suppressMessages(suppressWarnings(source(here::here(paste0("script_", analysis), file))))
   
   cli::cli_alert_success(paste(fun_name, "finished!"))
+  
+}
+
+
+# session_info ------------------------------------------------------------
+
+session_info <- function(){
+  session <- sessionInfo()
+  tibble::tibble(
+    Info = c("R version", "Platform", "OS"),
+    Value = c(
+      session$R.version$version.string,
+      session$platform,
+      session$running
+    )
+  )
   
 }
