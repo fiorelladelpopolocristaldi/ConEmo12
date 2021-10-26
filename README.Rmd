@@ -46,6 +46,8 @@ The folder is organized as using `.Rprojects`, and all functions within the `R/`
 2. Open the `analysis.Rproj` file. This file automatically load all functions and the `renv` environment. If `renv` is not loaded automatically, use `renv::restore()` and then restart the R session.
 3. Run the `main_script.R` file. This script can be launched directly `source("main_script.R")` or each analysis step separately using `run_script()`.
 
+In order to compile the `supplementary.Rmd` file is necessary to have `Latex` installed. Using the `tinytex` package ([link](https://yihui.org/tinytex/)) is possible to install a lightweight `Latex` version to compile `.Rmd` files.
+
 # Dataset description
 
 - `workerId`: unique identifier for each subject

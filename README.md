@@ -1,6 +1,5 @@
 
 ``` r
-#devtools::load_all()
 library(magrittr)
 ```
 
@@ -51,6 +50,11 @@ the `R/` folder are automatically loaded in the global environment.
 3.  Run the `main_script.R` file. This script can be launched directly
     `source("main_script.R")` or each analysis step separately using
     `run_script()`.
+
+In order to compile the `supplementary.Rmd` file is necessary to have
+`Latex` installed. Using the `tinytex` package
+([link](https://yihui.org/tinytex/)) is possible to install a
+lightweight `Latex` version to compile `.Rmd` files.
 
 # Dataset description
 
