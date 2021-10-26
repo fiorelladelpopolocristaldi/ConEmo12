@@ -3,17 +3,6 @@
 # these functions are used for the internal project organization and for running
 # each step of the analysis
 
-# run_script --------------------------------------------------------------
-
-run_script <- function(fun){
-  fun_name <- deparse(substitute(fun))
-  
-  # Running
-  suppressWarnings(suppressMessages(fun()))
-  
-  cli::cli_alert_success(paste(fun_name, "finished!"))
-}
-
 # get_packages ------------------------------------------------------------
 
 get_all_pakages <- function(folder_list, exts){
@@ -68,10 +57,33 @@ put_packages_readme <- function(){
     )
   )
   
+  all_pkgs <- paste0("`", all_pkgs, "`")
   all_pkgs <- paste("-", all_pkgs)
   
   readme <- append(readme, all_pkgs)
   
   writeLines(readme, "README.md")
+  
+}
+
+# load_all_fun ----------------------------------------------------------------
+
+load_all_fun <- function(){
+  dirs <- c("script_auditory", "script_visual", "script_1vs2")
+  files <- unlist(sapply(dirs, function(x) list.files(here::here(x), full.names = TRUE)))
+  funs <- lapply(files, function(x) source(here::here(x)))
+}
+
+# run_script --------------------------------------------------------------
+
+run_script <- function(file, analysis = c("visual", "auditory", "1vs2")){
+  
+  fun_name <- deparse(substitute(file))
+  
+  analysis = match.arg(analysis)
+  
+  suppressMessages(suppressWarnings(source(here::here(paste0("script_", analysis), file))))
+  
+  cli::cli_alert_success(paste(fun_name, "finished!"))
   
 }
