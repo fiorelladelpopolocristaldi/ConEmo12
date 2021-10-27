@@ -17,7 +17,7 @@ theme_paper <- function(plot){
 
 # cleaning the names for the plot
 
-clean_names_plot <- function(data, mod = c("prereg", "time", "cong")){
+clean_names_plot <- function(data, mod = c("prereg", "cong")){
 
   dat_clean <- data %>%
     mutate(valence = case_when(valence == "neg" ~ "Neg",
@@ -35,12 +35,6 @@ clean_names_plot <- function(data, mod = c("prereg", "time", "cong")){
   }else if(mod == "cong"){
     dat_clean %>%
       mutate(Cong = ifelse(Cong == 1, "Con", "NCon"))
-  }else if(mod == "time"){
-    dat_clean %>%
-      mutate(s1_color = as.character(s1_color),
-             s1_color = case_when(s1_color == "blue" ~ "Blue",
-                                  s1_color == "red" ~ "Red",
-                                  TRUE ~ ""))
   }
 }
 
@@ -54,7 +48,8 @@ box_plot <- function(data, ..., nrow = NULL, ncol = NULL){
   data %>%
     mutate(resp = case_when(resp == "Exprating" ~ "Expectancy",
                             resp == "Valrating" ~ "Valence",
-                            resp == "Arrating" ~ "Arousal"),
+                            resp == "Arrating" ~ "Arousal",
+                            TRUE ~ resp),
            resp = factor(resp, levels = c("Expectancy", "Valence", "Arousal"))) %>%
     ggplot(aes(x = interaction(!!!dots, sep = ""), y = .mean, fill = group)) +
     geom_point(aes(color = group),
