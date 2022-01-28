@@ -2,7 +2,7 @@
 output: github_document
 ---
 
-```{r packages}
+```{r packages, echo = FALSE}
 library(magrittr)
 ```
 
@@ -38,15 +38,19 @@ The folder is organized as using `.Rprojects`, and all functions within the `R/`
 - `script_1vs2`: contains the analysis script for comparing experiment 1 vs experiment 2
 - `supplementary`: contains the `.Rmd` file to create the supplementary materials in `.pdf` format
 - `renv/`: contains the R environment with all packages version in order to reproduce the analysis
+- `renv.lock`: contains all project dependencies
 - `main_script.R`: is the main script that call each sub-script to run the full analysis
 
 ## Suggested workflow
 
 1. Make sure that *R* and *Rstudio* are up-to-date. Under the *Session Info* section is reported the R version used for this project.
-2. Open the `analysis.Rproj` file. This file automatically load all functions and the `renv` environment. If `renv` is not loaded automatically, use `renv::restore()` and then restart the R session.
-3. Run the `main_script.R` file. This script can be launched directly `source("main_script.R")` or each analysis step separately using `run_script()`.
+2. Install the [`renv`](https://rstudio.github.io/renv/articles/renv.html) package for managing dependencies
+3. Open the `ConEmo12.Rproj` file
+4. Use `renv::init()` in order to initialize the project with `renv`
+5. Use `renv::restore()` in order to install packages from the `renv.lock` file
+6. Run the `main_script.R` file. This script can be launched directly `source("main_script.R")` or each analysis step separately using `run_script()`.
 
-In order to compile the `supplementary.Rmd` file is necessary to have `Latex` installed. Using the `tinytex` package ([link](https://yihui.org/tinytex/)) is possible to install a lightweight `Latex` version to compile `.Rmd` files.
+In order to compile the `supplementary.Rmd` file is necessary to have `Latex` installed. Using the `tinytex` package ([link](https://yihui.org/tinytex/)) is possible to install a lightweight `Latex` distribution to compile `.Rmd` files.
 
 # Dataset description
 
