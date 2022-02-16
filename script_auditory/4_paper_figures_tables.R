@@ -118,8 +118,22 @@ eff_val_cong <- get_effects(all_table$models$mod_list_cong$fit_val, y = valratin
 dat_plot_cong <- bind_rows(eff_arr_cong, eff_val_cong) %>%
     clean_names_plot(., mod = "cong")
 
-cong_plot <- box_plot(dat_plot_cong, valence, Cong) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+cong_plot <- dat_plot_cong %>% 
+    mutate(resp = case_when(resp == "Exprating" ~ "Expectancy",
+                            resp == "Valrating" ~ "Valence",
+                            resp == "Arrating" ~ "Arousal",
+                            TRUE ~ resp),
+           resp = factor(resp, levels = c("Expectancy", "Valence", "Arousal"))) %>%
+    filter(resp != "Expectancy") %>% 
+    ggplot(aes(x = Cong, y = .mean, fill = group)) +
+    geom_point(aes(color = group),
+               position=position_jitterdodge(jitter.width = 0.4, jitter.height = 0)) +
+    geom_boxplot(outlier.shape=NA, alpha = 0.7) +
+    ggh4x::facet_nested(~resp+valence, scales = "free_x") +
+    theme_paper() +
+    scale_color_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
+    scale_fill_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
+    ylab("Rating (%)")
 
 # Saving
 
