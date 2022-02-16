@@ -34,7 +34,7 @@ clean_names_plot <- function(data, mod = c("prereg", "cong")){
                                   TRUE ~ ""))
   }else if(mod == "cong"){
     dat_clean %>%
-      mutate(Cong = ifelse(Cong == 1, "Con", "NCon"))
+      mutate(Cong = ifelse(Cong == 1, "NCon", "Con"))
   }
 }
 
