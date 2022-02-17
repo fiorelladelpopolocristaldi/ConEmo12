@@ -8,7 +8,7 @@
 # the general theme used across figures
 
 theme_paper <- function(plot){
-  theme_minimal_hgrid(font_size = 18) +
+  cowplot::theme_minimal_hgrid(font_size = 18) +
     theme(axis.title.x = element_blank(),
           legend.position = "right")
 }
