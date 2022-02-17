@@ -21,4 +21,4 @@ run_script("study1vs2.R", analysis = "1vs2")
 
 # Create supplementary materials --------------------------------------------------
 
-rmarkdown::render("supplementary/supplementary.Rmd", quiet = T)
+rmarkdown::render("supplementary/supplementary.Rmd", quiet = TRUE)
