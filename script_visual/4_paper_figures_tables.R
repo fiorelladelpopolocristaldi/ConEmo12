@@ -163,7 +163,7 @@ r2_table <- all_table_mod %>%
            formula = map_chr(models, get_formula)) %>%
     select(-models)
 
-saveRDS(r2_table, here("objects", "obj_visual", "2_table.rds"))
+saveRDS(r2_table, here("objects", "obj_visual", "r2_table.rds"))
 
 emmeans_list <- c(
     fit_exp = list(prereg_list$post_hoc_effsize$post_fit_exp),
