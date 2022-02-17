@@ -24,6 +24,7 @@ header-includes:
 output: 
   bookdown::pdf_document2:
     latex_engine: lualatex
+    keep_tex: true
 ---
 
 ```{r setup, include=FALSE}
@@ -129,11 +130,11 @@ expl_visual$exp_mods_time$mods$fit_exp_block %>%
                           TRUE ~ resp),
          resp = factor(resp, levels = c("Expectancy", "Valence", "Arousal")),
          block = paste("Block", block)) %>% 
-  ggplot(aes(x = s1_color, y = .mean, fill = group)) +
+  ggplot(aes(x = block, y = .mean, fill = group)) +
   geom_point(aes(color = group),
              position=position_jitterdodge(jitter.width = 0.4, jitter.height = 0)) +
   geom_boxplot(outlier.shape=NA, alpha = 0.7) +
-  facet_wrap(~block) +
+  facet_wrap(~s1_color) +
   theme_paper() +
   scale_color_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
   scale_fill_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
@@ -214,11 +215,11 @@ expl_auditory$exp_mods_time$mods$fit_exp_block %>%
                           TRUE ~ resp),
          resp = factor(resp, levels = c("Expectancy", "Valence", "Arousal")),
          block = paste("Block", block)) %>% 
-  ggplot(aes(x = s1_color, y = .mean, fill = group)) +
+  ggplot(aes(x = block, y = .mean, fill = group)) +
   geom_point(aes(color = group),
              position=position_jitterdodge(jitter.width = 0.4, jitter.height = 0)) +
   geom_boxplot(outlier.shape=NA, alpha = 0.7) +
-  facet_wrap(~block) +
+  facet_wrap(~s1_color) +
   theme_paper() +
   scale_color_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
   scale_fill_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
