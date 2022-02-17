@@ -29,8 +29,8 @@ clean_names_plot <- function(data, mod = c("prereg", "cong")){
   if(mod == "prereg"){
     dat_clean %>%
       mutate(s1_color = as.character(s1_color),
-             s1_color = case_when(s1_color == "blue" ~ "Blue",
-                                  s1_color == "red" ~ "Red",
+             s1_color = case_when(s1_color == "neu" ~ "Neu",
+                                  s1_color == "neg" ~ "Neg",
                                   TRUE ~ ""))
   }else if(mod == "cong"){
     dat_clean %>%
