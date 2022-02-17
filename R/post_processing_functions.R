@@ -9,7 +9,7 @@
 
 tidy_fit <- function(fit){
     fit %>%
-        tidy(conf.int = T) %>%
+        broom.mixed::tidy(conf.int = T) %>%
         select(-group, -effect) %>%
         dplyr::filter(!startsWith(term, "cor")) # removing the correlation parameter
 }
@@ -20,7 +20,7 @@ tidy_fit <- function(fit){
 
 tidy_anova <- function(fit){
     anova(fit) %>%
-        tidy()
+        broom.mixed::tidy()
 }
 
 # prep_names_model --------------------------------------------------------
@@ -34,10 +34,14 @@ prep_names_model <- function(tidy_mod){
                              term == "group1" ~ "UG - CG",
                              term == "Cong1" ~ "congruent - incongruent",
                              term == "block1" ~ "block 1 - block 2",
+                             term == "block2" ~ "block 2 - block 1",
                              term == "valence1:Cong1" ~ "valence x congruency",
                              term == "group1:block1" ~ "group x block",
                              term == "valence1:block1" ~ "valence x block",
                              term == "block1:valence1" ~ "valence x block",
+                             term == "block2:s1_color1" ~ "block x cue",
+                             term == "group1:block2" ~ "group x block",
+                             term == "group1:block2:s1_color1" ~ "group x block x cue",
                              term == "group1:block1:valence1" ~ "group x valence x block",
                              term == "valence1" ~ "neg - neu",
                              term == "s1_color1" ~ "neg - neu",
@@ -55,7 +59,8 @@ prep_names_model <- function(tidy_mod){
                              term == "sd__(Intercept)" ~ paste0("\u03C3", " ID"),
                              term == "sd__Observation" ~ paste0("\u03C3", " residual"),
                              term == "sd__valence1" ~ paste0("\u03C3", " valence"),
-                             term == "sd__s1_color1" ~ paste0("\u03C3", " cue")),
+                             term == "sd__s1_color1" ~ paste0("\u03C3", " cue"),
+                             TRUE ~ term),
             p.value = ifelse(p.value < 0.001, "< 0.001", as.character(round(p.value, 3)))) %>%
         rename(
             "Parameter" = term,
@@ -77,6 +82,9 @@ prep_names_anova <- function(tidy_fit){
                 term == "group" ~ "Group",
                 term == "valence" ~ "Valence",
                 term == "s1_color" ~ "Cue",
+                term == "group:block" ~ "Group x Block",
+                term == "block:s1_color" ~ "Block x Cue",
+                term == "group:block:s1_color" ~ "Group x Block x Color",
                 term == "group:s1_color" ~ "Group x Color",
                 term == "group:valence" ~ "Group x Valence",
                 term == "group:Cong" ~ "Group x Congruency",
@@ -98,12 +106,14 @@ prep_names_anova <- function(tidy_fit){
 
 # create a model table using the flextable package
 
-model_table <- function(data){
+model_table <- function(data, single_model = FALSE){
     data %>%
         mutate(across(where(is.numeric), round, 2),
                mod = case_when(mod == "fit_arr" ~ "Arousal",
                                mod == "fit_exp" ~ "Expectancy",
-                               mod == "fit_val" ~ "Valence")) %>%
+                               mod == "fit_val" ~ "Valence",
+                               TRUE ~ mod)) %>%
+        conditional(select)(-mod, execute = single_model) %>% 
         flextable() %>%
         flextable::merge_v(j = 1) %>%
         flextable::theme_vanilla() %>%
@@ -127,12 +137,13 @@ model_table <- function(data){
 
 # create an anova table using the flextable package
 
-anova_table <- function(data){
+anova_table <- function(data, single_model = TRUE){
     data %>%
         mutate(across(where(is.numeric), round, 2),
                mod = case_when(mod == "fit_arr" ~ "Arousal",
                                mod == "fit_exp" ~ "Expectancy",
                                mod == "fit_val" ~ "Valence")) %>%
+        conditional(select)(-mod, execute = single_model) %>% 
         flextable() %>%
         autofit() %>%
         flextable::compose(part = "header", j = "NumDF",
@@ -140,9 +151,10 @@ anova_table <- function(data){
         flextable::compose(part = "header", j = "DenDF",
                 value = as_paragraph("Df", as_sub("den"))) %>%
         align(part = "all", align = "center") %>%
-        merge_v(j = "mod") %>%
+        conditional(merge_v)(j = "mod", execute = !single_model) %>%
         theme_vanilla() %>%
-        set_header_labels(values = list(mod = "Model"))
+        conditional(set_header_labels)(values = list(mod = "Model"),
+                                       execute = !single_model)
 }
 
 # get_effects -------------------------------------------------------------
@@ -150,8 +162,8 @@ anova_table <- function(data){
 # get model effects from a fitted model for plotting purposes. Use
 # lazy evaluation
 
-get_effects <- function(fit, y,...){
-    eff_fit <- allEffects(fit)[[1]] %>% data.frame()
+get_effects <- function(fit, y, ...){
+    #eff_fit <- effects::allEffects(fit)[[1]] %>% data.frame()
     dat <- fit@frame
     dots <- rlang::enexprs(...)
     dots_join <- dots[dots %in% c("group", "s1_color", "valence", "block", "Cong")]
@@ -159,7 +171,7 @@ get_effects <- function(fit, y,...){
     dat %>%
         group_by(!!!dots) %>%
         summarise(.mean = mean(!!y)) %>%
-        left_join(., eff_fit, by = sapply(dots_join, as.character)) %>%
+        #left_join(., eff_fit, by = sapply(dots_join, as.character)) %>%
         ungroup() %>%
         mutate(resp = as.character(quote(!!y)))
 }
