@@ -29,7 +29,10 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
                       message = FALSE,
-                      warning = FALSE)
+                      warning = FALSE,
+                      fig.align = "center",
+                      fig.retina = 2,
+                      dpi = 300)
 options(knitr.kable.NA = '') # for NA values in tables
 ```
 
@@ -37,6 +40,8 @@ options(knitr.kable.NA = '') # for NA values in tables
 library(tidyverse)
 library(flextable)
 library(here)
+library(ftExtra)
+devtools::load_all()
 ```
 
 ```{r functions}
@@ -54,18 +59,23 @@ customize_table <- function(table, caption, font = 9){
 
 ```{r loading-gen-data}
 tab_stimuli <- read_rds(here("supplementary", "objects", "tab_stimuli.rds"))
+tab_cond <- read_rds(here("supplementary", "objects", "tab_exp_cond.rds"))
 ```
 
 ```{r loading-data-visual}
 mod_paper_visual <- read_rds(here("objects", "obj_visual", "mod_paper.rds"))
 plot_paper_visual <- read_rds(here("objects", "obj_visual", "plot_paper.rds"))
 anova_paper_visual <- read_rds(here("objects", "obj_visual", "anova_paper.rds"))
+expl_visual <- read_rds(here("objects", "obj_visual", "expl_list.rds"))
+dat_visual <- read_rds(here("data", "data_visual", "data_no_outlier.rds"))
 ```
 
 ```{r loading-data-auditory}
 mod_paper_auditory <- read_rds(here("objects", "obj_auditory", "mod_paper.rds"))
 plot_paper_auditory <- read_rds(here("objects", "obj_auditory", "plot_paper.rds"))
 anova_paper_auditory <- read_rds(here("objects", "obj_auditory", "anova_paper.rds"))
+expl_auditory <- read_rds(here("objects", "obj_auditory", "expl_list.rds"))
+dat_auditory <- read_rds(here("data", "data_auditory", "data_no_outlier.rds"))
 ```
 
 # Experiment 1
@@ -80,24 +90,85 @@ tab_stimuli$table_1 %>% set_caption(caption = "List of NAPS picture names used a
 tab_stimuli$table_2 %>% customize_table(caption = "Means (M), standard deviations (SD), and results of two-tailed t-tests assuming unequal variance in luminance, contrast, complexity indices (i.e., JPEG size, entropy), and color space indices (i.e., LABL, LABA, LABB), referred to negative (Neg) and neutral (Neu) NAPS pictures employed as S2s in Experiment 1.") %>% knitr::knit_print()
 ```
 
-## Congruency model
-
-```{r cong-table-mod-visual}
-mod_paper_visual %>% 
-  dplyr::filter(names == "mod_list_cong") %>% 
-  pull(table) %>% 
-  get_element() %>% 
-  customize_table(caption = "Results of exploratory LMMs investigating the effect of S2 congruency (congruent vs. incongruent) on valence and arousal ratings in Experiment 1. SE = standard error.")
+```{r condition-table}
+tab_cond %>% customize_table(caption = "Trials per experimental condition in the learning and test phases. For each phase and group (CG = certain group, UG = uncertain group) we report the S1 color (S1), the S2 valence (S2), the S1-S2 congruency (%) and the number of trials out of total (N). For the test phase we also report the predictive meaning of the cue according to new contingencies (Cue; Cueneg = cue preceding negative S2s, Cueneu = cue preceding neutral S2s), and the S2 congruency (Cong; Con = congruent, NCon = incongruent). Color-valence pairings were counterbalanced between subjects."
+)
 ```
 
 \newpage
 
-```{r cong-table-anova-visual}
-anova_paper_visual %>% 
-  dplyr::filter(names == "mod_list_cong") %>% 
-  pull(table) %>% 
-  get_element() %>% 
-  customize_table(caption = "Anova table of exploratory LMMs investigating the effect of S2 congruency (congruent vs. incongruent) on valence and arousal ratings in Experiment 1.")
+## Time
+
+### Block
+
+```{r mod-visual-block}
+expl_visual$exp_mods_time$mods$fit_exp_block %>% 
+  tidy_fit() %>% 
+  mutate(mod = "fit_exp") %>% 
+  prep_names_model() %>% 
+  model_table(single_model = TRUE) %>% 
+  customize_table(caption = "Results of exploratory LMMs investigating the effect of block (1 and 2) group (CG and UG) and Cue (Negative and Neutral) on Expectancy rating in Experiment 1. We reported the unstandardized regression coefficients, standard errors (SE), 95% confidence intervals (CI), and the associated t-test.")
+```
+
+```{r anova-visual-block}
+expl_visual$exp_mods_time$mods$fit_exp_block %>% 
+  tidy_anova() %>% 
+  mutate(mod = "fit_exp") %>% 
+  prep_names_anova() %>% 
+  anova_table(single_model = TRUE) %>% 
+  customize_table(caption = "Anova table of exploratory LMM investigating the effect of block (first vs second part of the experiment) group (CG and UG) and Cue (Negative and Neutral) on Expectancy rating in Experiment 1.")
+```
+
+```{r plot-visual-block, fig.cap="Box-plot of expectancy ratings in Experiment 1 according to the group (CG vs. UG), and the cue S1 color (cue-neg vs. cue-neu). Points represent the mean estimated value for each participant and condition."}
+
+expl_visual$exp_mods_time$mods$fit_exp_block %>% 
+  get_effects(y = exprating, workerId, group, block, s1_color) %>% 
+  mutate(resp = case_when(resp == tolower("Exprating") ~ "Expectancy",
+                          resp == tolower("Valrating") ~ "Valence",
+                          resp == tolower("Arrating") ~ "Arousal",
+                          TRUE ~ resp),
+         resp = factor(resp, levels = c("Expectancy", "Valence", "Arousal")),
+         block = paste("Block", block)) %>% 
+  ggplot(aes(x = s1_color, y = .mean, fill = group)) +
+  geom_point(aes(color = group),
+             position=position_jitterdodge(jitter.width = 0.4, jitter.height = 0)) +
+  geom_boxplot(outlier.shape=NA, alpha = 0.7) +
+  facet_wrap(~block) +
+  theme_paper() +
+  scale_color_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
+  scale_fill_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
+  ylab("Rating (%)")
+```
+\newpage
+
+### Trials
+
+```{r plot-visual-trials, fig.cap="Relationship between trials, cue (negative and neutral) and group (CG and UG) on Expectancy ratings. For each subject and group a loess regression is fitted in order to represent the non-linear pattern. Furthermore, given the non-linearity we did not reported the linear mixed-model analysis."}
+dat_exp_visual <- dat_visual %>% filter(cond == "exp")
+
+dat_exp_visual_summary <- dat_exp_visual %>% 
+  group_by(trial_cond, s1_color, group) %>% 
+  summarise(.mean = mean(exprating))
+
+ggplot() +
+  geom_line(data = dat_exp_visual,
+            aes(x = trial_cond, y = exprating, group = workerId, color = group),
+            stat="smooth",
+            method = "loess",
+            alpha = 0.15,
+            size = 0.8) +
+  geom_line(data = dat_exp_visual_summary,
+            aes(x = trial_cond, y = .mean, color = group),
+            stat="smooth",
+            size = 2,
+            method = "loess",
+            alpha = 1) +
+  facet_grid(~s1_color) +
+  theme_paper() +
+  xlab("Expectancy") +
+  ylim(c(-20, 120)) +
+  scale_color_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
+  scale_fill_manual(name = "", values=c("#4DCA87", "#F09A0F"))
 ```
 
 # Experiment 2
@@ -112,22 +183,76 @@ tab_stimuli$table_3 %>% set_caption(caption = "List of NAPS picture names used a
 tab_stimuli$table_4 %>% customize_table(caption = "Means (M), standard deviations (SD), and results of two-tailed t-tests assuming unequal variance in luminance, contrast, complexity indices (i.e., JPEG size, entropy), and color space indices (i.e., LABL, LABA, LABB) for affective pictures, and in physical properties (i.e., min dB, max dB, peak dB) for affective sounds, referred to negative (Neg) and neutral (Neu) NAPS pictures and IADS-2 sounds employed as S2s in Experiment 2.") %>% knitr::knit_print()
 ```
 
-## Congruency model
+## Time
 
-```{r cong-table-mod-auditory}
-mod_paper_auditory %>% 
-  dplyr::filter(names == "mod_list_cong") %>% 
-  pull(table) %>% 
-  get_element() %>% 
-  customize_table(caption = "Results of exploratory LMMs investigating the effect of S2 congruency (congruent vs. incongruent) on valence and arousal ratings in Experiment 2. SE = standard error.")
+### Block
+
+```{r mod-auditory-block}
+expl_auditory$exp_mods_time$mods$fit_exp_block %>% 
+  tidy_fit() %>% 
+  mutate(mod = "fit_exp") %>% 
+  prep_names_model() %>% 
+  model_table(single_model = TRUE) %>% 
+  customize_table(caption = "Results of exploratory LMMs investigating the effect of trial (mean centered) on expectancy ratings in Experiment 2. For each model, we reported the unstandardized regression coefficients, standard errors (SE), 95% confidence intervals (CI), and the associated t-test.")
 ```
 
-\pagebreak
+```{r anova-auditory-block}
+expl_visual$exp_mods_time$mods$fit_exp_block %>% 
+  tidy_anova() %>% 
+  mutate(mod = "fit_exp") %>% 
+  prep_names_anova() %>% 
+  anova_table(single_model = TRUE) %>% 
+  customize_table(caption = "Anova table of exploratory LMM investigating the effect of block (first vs second part of the experiment) group (CG and UG) and Cue (Negative and Neutral) on Expectancy rating in Experiment 2.")
+```
 
-```{r cong-table-anova-auditory}
-anova_paper_auditory %>% 
-  dplyr::filter(names == "mod_list_cong") %>% 
-  pull(table) %>% 
-  get_element() %>% 
-  customize_table(caption = "Anova table of exploratory LMMs investigating the effect of S2 congruency (congruent vs. incongruent) on valence and arousal ratings in Experiment 2. SE = standard error.")
+```{r plot-auditory-block, fig.cap="Box-plot of expectancy ratings in Experiment 2 according to the group (CG vs. UG), and the cue S1 color (cue-neg vs. cue-neu). Points represent the mean estimated value for each participant and condition."}
+expl_auditory$exp_mods_time$mods$fit_exp_block %>% 
+  get_effects(y = exprating, workerId, group, block, s1_color) %>% 
+  mutate(resp = case_when(resp == tolower("Exprating") ~ "Expectancy",
+                          resp == tolower("Valrating") ~ "Valence",
+                          resp == tolower("Arrating") ~ "Arousal",
+                          TRUE ~ resp),
+         resp = factor(resp, levels = c("Expectancy", "Valence", "Arousal")),
+         block = paste("Block", block)) %>% 
+  ggplot(aes(x = s1_color, y = .mean, fill = group)) +
+  geom_point(aes(color = group),
+             position=position_jitterdodge(jitter.width = 0.4, jitter.height = 0)) +
+  geom_boxplot(outlier.shape=NA, alpha = 0.7) +
+  facet_wrap(~block) +
+  theme_paper() +
+  scale_color_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
+  scale_fill_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
+  ylab("Rating (%)")
+```
+
+\newpage
+
+### Trials
+
+```{r plot-auditory-trials, fig.cap="Relationship between trials, the cue S1 color (cue-neg and cue-neu) and group (CG and UG) on Expectancy ratings for Experiment 2. For each subject and group a loess regression is fitted in order to represent the non-linear pattern. Furthermore, given the non-linearity we did not reported the linear mixed-model analysis."}
+
+dat_exp_auditory <- dat_auditory %>% filter(cond == "exp")
+
+dat_exp_auditory_summary <- dat_exp_auditory %>% 
+  group_by(trial_cond, s1_color, group) %>% 
+  summarise(.mean = mean(exprating))
+
+ggplot() +
+  geom_line(data = dat_exp_auditory,
+            aes(x = trial_cond, y = exprating, group = workerId, color = group),
+            stat="smooth",
+            method = "loess",
+            alpha = 0.15,
+            size = 0.8) +
+  geom_line(data = dat_exp_auditory_summary,
+            aes(x = trial_cond, y = .mean, color = group),
+            stat="smooth",
+            size = 2,
+            method = "loess",
+            alpha = 1) +
+  facet_grid(~s1_color) +
+  theme_paper() +
+  ylim(c(-20, 120)) +
+  scale_color_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
+  scale_fill_manual(name = "", values=c("#4DCA87", "#F09A0F"))
 ```
