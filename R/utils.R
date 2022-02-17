@@ -98,3 +98,11 @@ session_info <- function(){
   )
   
 }
+
+# conditional -------------------------------------------------------------
+
+conditional <- function(fun){
+  function(..., execute) {
+    if (execute) fun(...) else ..1
+  }
+}
