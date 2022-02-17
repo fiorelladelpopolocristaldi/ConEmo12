@@ -11,9 +11,18 @@ library(broom.mixed)
 library(emmeans)
 library(here)
 
-# Importing Data ----------------------------------------------------------
+# Creating Dataset --------------------------------------------------------
 
-dat <- read_rds(here("data", "data_12", "data_studies_cleaned.rds"))
+dat_visual <- read_rds(here("data", "data_visual", "data_no_outlier.rds"))
+dat_auditory <- read_rds(here("data", "data_auditory", "data_no_outlier.rds"))
+
+# Adding study column
+
+dat_visual$study <- 1
+dat_auditory$study <- 2
+
+dat <- bind_rows(dat_visual, dat_auditory)
+dat$study <- as.factor(dat$study)
 
 # Analysis ----------------------------------------------------------------
 
