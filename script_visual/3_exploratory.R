@@ -38,6 +38,10 @@ contrasts(dat$valence) <- c(0.5, -0.5)
 contrasts(dat$s1_color) <- c(0.5, -0.5)
 contrasts(dat$Cong) <- c(0.5, -0.5)
 
+# Centering
+
+dat$trial_cond_mc <- dat$trial_cond - mean(dat$trial_cond)
+
 # Data for models
 
 dat_exp <- dat %>% dplyr::filter(cond == "exp")
@@ -65,11 +69,28 @@ arr_cong_list <- list(
 
 arr_mods_cong <- complete_model_analysis(arr_cong_list, fun_list)
 
+# Time --------------------------------------------------------------------
+
+fit_exp_block <- lmer(exprating ~ group * block * s1_color + (s1_color|workerId), data = dat_exp)
+fit_exp_group_trial <- lmer(exprating ~ group * trial_cond * s1_color + (s1_color|workerId), data = dat_exp)
+
+# List of models, only for convenience
+
+exp_mods_time_list <- list(
+    fit_exp_block = fit_exp_block,
+    fit_exp_group_trial = fit_exp_group_trial
+)
+
+# Apply the complete analysis
+
+exp_mods_time <- complete_model_analysis(exp_mods_time_list, fun_list)
+
 # Saving ------------------------------------------------------------------
 
 exp_analysis <- list(
     val_mods_cong = val_mods_cong,
-    arr_mods_cong = arr_mods_cong
+    arr_mods_cong = arr_mods_cong,
+    exp_mods_time = exp_mods_time
 )
 
 saveRDS(exp_analysis, file = here("objects", "obj_visual", "expl_list.rds"))
