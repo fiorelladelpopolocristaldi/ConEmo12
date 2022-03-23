@@ -112,7 +112,8 @@ model_table <- function(data, single_model = FALSE){
                mod = case_when(mod == "fit_arr" ~ "Arousal",
                                mod == "fit_exp" ~ "Expectancy",
                                mod == "fit_val" ~ "Valence",
-                               TRUE ~ mod)) %>%
+                               TRUE ~ mod),
+               mod = factor(mod, levels = c("Expectancy", "Valence", "Arousal"))) %>%
         conditional(select)(-mod, execute = single_model) %>% 
         flextable() %>%
         flextable::merge_v(j = 1) %>%
