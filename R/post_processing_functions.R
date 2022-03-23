@@ -138,12 +138,13 @@ model_table <- function(data, single_model = FALSE){
 
 # create an anova table using the flextable package
 
-anova_table <- function(data, single_model = TRUE){
+anova_table <- function(data, single_model = FALSE){
     data %>%
         mutate(across(where(is.numeric), round, 2),
                mod = case_when(mod == "fit_arr" ~ "Arousal",
                                mod == "fit_exp" ~ "Expectancy",
-                               mod == "fit_val" ~ "Valence")) %>%
+                               mod == "fit_val" ~ "Valence"),
+               mod = factor(mod, levels = c("Expectancy", "Valence", "Arousal"))) %>%
         conditional(select)(-mod, execute = single_model) %>% 
         flextable() %>%
         autofit() %>%
