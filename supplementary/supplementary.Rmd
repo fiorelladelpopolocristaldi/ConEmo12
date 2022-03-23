@@ -202,7 +202,7 @@ expl_auditory$exp_mods_time$mods$fit_exp_block %>%
 ```
 
 ```{r tableS9}
-expl_visual$exp_mods_time$mods$fit_exp_block %>% 
+expl_auditory$exp_mods_time$mods$fit_exp_block %>% 
   tidy_anova() %>% 
   mutate(mod = "fit_exp") %>% 
   prep_names_anova() %>% 
