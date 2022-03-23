@@ -4,6 +4,8 @@ subtitle: "Supplementary materials"
 header-includes:
   - \setcounter{table}{0} 
   - \renewcommand*{\thetable}{S\arabic{table}}
+  - \setcounter{figure}{0} 
+  - \renewcommand*{\thefigure}{S\arabic{figure}}
   - \usepackage{pdflscape}
   - \newcommand{\blandscape}{\begin{landscape}}
   - \newcommand{\elandscape}{\end{landscape}}
@@ -27,8 +29,9 @@ output:
     keep_tex: true
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, cache=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
+                      cache = TRUE,
                       message = FALSE,
                       warning = FALSE,
                       fig.align = "center",
@@ -37,7 +40,7 @@ knitr::opts_chunk$set(echo = FALSE,
 options(knitr.kable.NA = '') # for NA values in tables
 ```
 
-```{r packages}
+```{r packages, cache=FALSE}
 library(tidyverse)
 library(flextable)
 library(here)
@@ -83,15 +86,15 @@ dat_auditory <- read_rds(here("data", "data_auditory", "data_no_outlier.rds"))
 
 ## Stimuli
 
-```{r stimuli-table-visual}
+```{r tableS1}
 tab_stimuli$table_1 %>% set_caption(caption = "List of NAPS picture names used as S2s in Experiment 1, sorted by valence (Neg = negative, Neu = neutral).") %>% width(j = 2, 5, unit = "in") %>% fontsize(size = 8, part = "all") %>% knitr::knit_print()
 ```
 
-```{r stimuli-table2-visual}
+```{r tableS2}
 tab_stimuli$table_2 %>% customize_table(caption = "Means (M), standard deviations (SD), and results of two-tailed t-tests assuming unequal variance in luminance, contrast, complexity indices (i.e., JPEG size, entropy), and color space indices (i.e., LABL, LABA, LABB), referred to negative (Neg) and neutral (Neu) NAPS pictures employed as S2s in Experiment 1.") %>% knitr::knit_print()
 ```
 
-```{r condition-table}
+```{r tableS3}
 tab_cond %>% customize_table(caption = "Trials per experimental condition in the learning and test phases. For each phase and group (CG = certain group, UG = uncertain group) we report the S1 color (S1), the S2 valence (S2), the S1-S2 congruency (%) and the number of trials out of total (N). For the test phase we also report the predictive meaning of the cue according to new contingencies (Cue; Cueneg = cue preceding negative S2s, Cueneu = cue preceding neutral S2s), and the S2 congruency (Cong; Con = congruent, NCon = incongruent). Color-valence pairings were counterbalanced between subjects."
 )
 ```
@@ -102,25 +105,25 @@ tab_cond %>% customize_table(caption = "Trials per experimental condition in the
 
 ### Block
 
-```{r mod-visual-block}
+```{r tableS4}
 expl_visual$exp_mods_time$mods$fit_exp_block %>% 
   tidy_fit() %>% 
   mutate(mod = "fit_exp") %>% 
   prep_names_model() %>% 
   model_table(single_model = TRUE) %>% 
-  customize_table(caption = "Results of exploratory LMMs investigating the effect of block (1 and 2) group (CG and UG) and Cue (Negative and Neutral) on Expectancy rating in Experiment 1. We reported the unstandardized regression coefficients, standard errors (SE), 95% confidence intervals (CI), and the associated t-test.")
+  customize_table(caption = "Results of exploratory LMMs investigating the effect of block (1 vs. 2), group (CG vs. UG) and cue ($cue_{neg}$ vs. $cue_{neu}$) on expectancy ratings in Experiment 1. We reported the unstandardized regression coefficients, standard errors (SE), 95% confidence intervals (CI), and the associated t-test.")
 ```
 
-```{r anova-visual-block}
+```{r tableS5}
 expl_visual$exp_mods_time$mods$fit_exp_block %>% 
   tidy_anova() %>% 
   mutate(mod = "fit_exp") %>% 
   prep_names_anova() %>% 
   anova_table(single_model = TRUE) %>% 
-  customize_table(caption = "Anova table of exploratory LMM investigating the effect of block (first vs second part of the experiment) group (CG and UG) and Cue (Negative and Neutral) on Expectancy rating in Experiment 1.")
+  customize_table(caption = "Anova table of exploratory LMMs investigating the effect of block (1 vs. 2), group (CG vs. UG) and cue ($cue_{neg}$ vs. $cue_{neu}$) on expectancy ratings in Experiment 1.")
 ```
 
-```{r plot-visual-block, fig.cap="Box-plot of expectancy ratings in Experiment 1 according to the group (CG vs. UG), and the cue S1 color (cue-neg vs. cue-neu). Points represent the mean estimated value for each participant and condition."}
+```{r figureS1, fig.cap="Box-plot of expectancy ratings in Experiment 1 according to the group (CG vs. UG), the block (1 vs. 2) and the cue ($cue_{neg}$ vs. $cue_{neu}$). Points represent the mean estimated value for each participant and condition."}
 
 expl_visual$exp_mods_time$mods$fit_exp_block %>% 
   get_effects(y = exprating, workerId, group, block, s1_color) %>% 
@@ -144,7 +147,7 @@ expl_visual$exp_mods_time$mods$fit_exp_block %>%
 
 ### Trials
 
-```{r plot-visual-trials, fig.cap="Relationship between trials, cue (negative and neutral) and group (CG and UG) on Expectancy ratings. For each subject and group a loess regression is fitted in order to represent the non-linear pattern. Furthermore, given the non-linearity we did not reported the linear mixed-model analysis."}
+```{r figureS2, fig.cap="Relationship between trials, group (CG vs. UG) and cue ($cue_{neg}$ vs. $cue_{neu}$) on expectancy ratings for Experiment 1. For each subject and group a loess regression is fitted in order to represent the non-linear pattern. Furthermore, given the non-linearity we did not report the linear mixed-model analysis."}
 dat_exp_visual <- dat_visual %>% filter(cond == "exp")
 
 dat_exp_visual_summary <- dat_exp_visual %>% 
@@ -176,11 +179,11 @@ ggplot() +
 
 ## Stimuli
 
-```{r stimuli-table-auditory}
+```{r tableS6}
 tab_stimuli$table_3 %>% set_caption(caption = "List of NAPS picture names used as S2s in Experiment 1, sorted by valence (Neg = negative, Neu = neutral).") %>% width(j = c(2,3), width = 2.5, unit = "in") %>% fontsize(size = 8, part = "all") %>% knitr::knit_print()
 ```
 
-```{r stimuli-table2-auditory}
+```{r tableS7}
 tab_stimuli$table_4 %>% customize_table(caption = "Means (M), standard deviations (SD), and results of two-tailed t-tests assuming unequal variance in luminance, contrast, complexity indices (i.e., JPEG size, entropy), and color space indices (i.e., LABL, LABA, LABB) for affective pictures, and in physical properties (i.e., min dB, max dB, peak dB) for affective sounds, referred to negative (Neg) and neutral (Neu) NAPS pictures and IADS-2 sounds employed as S2s in Experiment 2.") %>% knitr::knit_print()
 ```
 
@@ -188,25 +191,25 @@ tab_stimuli$table_4 %>% customize_table(caption = "Means (M), standard deviation
 
 ### Block
 
-```{r mod-auditory-block}
+```{r tableS8}
 expl_auditory$exp_mods_time$mods$fit_exp_block %>% 
   tidy_fit() %>% 
   mutate(mod = "fit_exp") %>% 
   prep_names_model() %>% 
   model_table(single_model = TRUE) %>% 
-  customize_table(caption = "Results of exploratory LMMs investigating the effect of trial (mean centered) on expectancy ratings in Experiment 2. For each model, we reported the unstandardized regression coefficients, standard errors (SE), 95% confidence intervals (CI), and the associated t-test.")
+  customize_table(caption = "Results of exploratory LMMs investigating the effect of block (1 vs. 2), group (CG vs. UG) and cue ($cue_{neg}$ vs. $cue_{neu}$) on expectancy ratings in Experiment 2. We reported the unstandardized regression coefficients, standard errors (SE), 95% confidence intervals (CI), and the associated t-test.")
 ```
 
-```{r anova-auditory-block}
+```{r tableS9}
 expl_visual$exp_mods_time$mods$fit_exp_block %>% 
   tidy_anova() %>% 
   mutate(mod = "fit_exp") %>% 
   prep_names_anova() %>% 
   anova_table(single_model = TRUE) %>% 
-  customize_table(caption = "Anova table of exploratory LMM investigating the effect of block (first vs second part of the experiment) group (CG and UG) and Cue (Negative and Neutral) on Expectancy rating in Experiment 2.")
+  customize_table(caption = "Anova table of exploratory LMMs investigating the effect of block (1 vs. 2), group (CG vs. UG) and cue ($cue_{neg}$ vs. $cue_{neu}$) on expectancy ratings in Experiment 2.")
 ```
 
-```{r plot-auditory-block, fig.cap="Box-plot of expectancy ratings in Experiment 2 according to the group (CG vs. UG), and the cue S1 color (cue-neg vs. cue-neu). Points represent the mean estimated value for each participant and condition."}
+```{r figureS3, fig.cap="Box-plot of expectancy ratings in Experiment 2 according to the group (CG vs. UG), the block (1 vs. 2) and the cue ($cue_{neg}$ vs. $cue_{neu}$). Points represent the mean estimated value for each participant and condition."}
 expl_auditory$exp_mods_time$mods$fit_exp_block %>% 
   get_effects(y = exprating, workerId, group, block, s1_color) %>% 
   mutate(resp = case_when(resp == tolower("Exprating") ~ "Expectancy",
@@ -230,7 +233,7 @@ expl_auditory$exp_mods_time$mods$fit_exp_block %>%
 
 ### Trials
 
-```{r plot-auditory-trials, fig.cap="Relationship between trials, the cue S1 color (cue-neg and cue-neu) and group (CG and UG) on Expectancy ratings for Experiment 2. For each subject and group a loess regression is fitted in order to represent the non-linear pattern. Furthermore, given the non-linearity we did not reported the linear mixed-model analysis."}
+```{r figureS4, fig.cap="Relationship between trials, group (CG vs. UG) and cue ($cue_{neg}$ vs. $cue_{neu}$) on expectancy ratings for Experiment 2. For each subject and group a loess regression is fitted in order to represent the non-linear pattern. Furthermore, given the non-linearity we did not reported the linear mixed-model analysis."}
 
 dat_exp_auditory <- dat_auditory %>% filter(cond == "exp")
 
