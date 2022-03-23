@@ -59,7 +59,8 @@ box_plot <- function(data, ..., nrow = NULL, ncol = NULL){
     theme_paper() +
     scale_color_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
     scale_fill_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
-    ylab("Rating (%)")
+    ylab("Rating (%)") +
+    theme(axis.text.x = ggtext::element_markdown()) # parsing html tags
 }
 
 # remove_axis_text -------------------------------------------------------------
