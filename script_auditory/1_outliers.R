@@ -152,8 +152,6 @@ dat %>%
     geom_line(alpha = 0.4, size = 1) +
     facet_wrap(~group)
 
-# to exclude -> workerId 14670
-
 dat %>%
     dplyr::filter(cond == "val_arr") %>%
     group_by(workerId, valence, group) %>%
@@ -168,8 +166,6 @@ dat %>%
     geom_line(alpha = 0.4, size = 1) +
     facet_wrap(~group)
 
-# to exclude -> workerId 14570
-
 dat %>%
     dplyr::filter(cond == "val_arr") %>%
     group_by(workerId, valence, group) %>%
@@ -183,8 +179,6 @@ dat %>%
     geom_text(aes(label = workerId), hjust = 0, vjust = 0) +
     geom_line(alpha = 0.4, size = 1) +
     facet_wrap(~group)
-
-# to exclude -> workerId 14533, 14686, 14479, 14706, 14591
 
 filter_outliers_mcd <- function(out_data, resp = "all"){
 
@@ -217,19 +211,10 @@ dat %>%
     geom_line(alpha = 0.4, size = 1) +
     facet_wrap(~group)
 
-# to exclude -> workerId 14539
-
 # Excluding outliers from dataset -----------------------------------------
 
 dat_no_out <- dat %>%
     dplyr::filter(!(workerId %in% filter_outliers(out_mad)$workerId)) # exclude all outliers detected with MAD
-
-# not all the outliers detected with MAD are actually outliers
-
-out_manual <- c("14670", "14570", "14591", "14533", "14686", "14479", "14706", "14539")
-
-dat_no_out <- dat %>%
-    dplyr::filter(!(workerId %in% out_manual)) # exclude outliers confirmed by visual inspection
 
 # Saving ------------------------------------------------------------------
 
