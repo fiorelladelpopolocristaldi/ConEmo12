@@ -80,12 +80,12 @@ specific trial.
 
 # Packages
 
+-   `tidyverse`
+-   `here`
 -   `lme4`
 -   `lmerTest`
 -   `influence.ME`
--   `tidyverse`
 -   `Routliers`
--   `here`
 -   `effects`
 -   `broom`
 -   `broom.mixed`
@@ -100,10 +100,10 @@ specific trial.
 
 ``` r
 session_info()
-#> # A tibble: 3 x 2
-#>   Info      Value                          
-#>   <chr>     <chr>                          
-#> 1 R version R version 4.1.2 (2021-11-01)   
-#> 2 Platform  x86_64-w64-mingw32/x64 (64-bit)
-#> 3 OS        Windows 10 x64 (build 19044)
+#> # A tibble: 3 × 2
+#>   Info      Value                       
+#>   <chr>     <chr>                       
+#> 1 R version R version 4.1.3 (2022-03-10)
+#> 2 Platform  x86_64-pc-linux-gnu (64-bit)
+#> 3 OS        Pop!_OS 21.10
 ```
