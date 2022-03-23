@@ -47,3 +47,5 @@ po/*~
 **/dep/*
 .todoget
 outfile.md
+
+*_files/
