@@ -1,12 +1,13 @@
-Package: analysis
-Title: What the Package Does (One Line, Title)
+Package: ConEmo12
+Title: Package for the statical analysis of the ConEmo12 project
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Fiorella", "Del Popolo Cristaldi", ,"fiorella.delpopolocristaldi@phd.unipd.it", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-3963-0582"))
+    person("Filippo", "Gambarota", ,"filippo.gambarota@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-6666-1747"))
+Description: This package allow to reproduce all analysis, figures and tables of the manuscript and supplementary materials
+License: `use_mit_license()`
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
