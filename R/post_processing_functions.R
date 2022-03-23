@@ -32,7 +32,7 @@ prep_names_model <- function(tidy_mod){
         mutate(
             term = case_when(term == "(Intercept)" ~ "Intercept",
                              term == "group1" ~ "UG - CG",
-                             term == "Cong1" ~ "congruent - incongruent",
+                             term == "Cong1" ~ "Con-NCon",
                              term == "block1" ~ "block 1 - block 2",
                              term == "block2" ~ "block 2 - block 1",
                              term == "valence1:Cong1" ~ "valence x congruency",
@@ -43,8 +43,8 @@ prep_names_model <- function(tidy_mod){
                              term == "group1:block2" ~ "group x block",
                              term == "group1:block2:s1_color1" ~ "group x block x cue",
                              term == "group1:block1:valence1" ~ "group x valence x block",
-                             term == "valence1" ~ "neg - neu",
-                             term == "s1_color1" ~ "neg - neu",
+                             term == "valence1" ~ "S2~neg~ - S2~neu~",
+                             term == "s1_color1" ~ "cue~neg~ - cue~neu~",
                              term == "Cong1:block1" ~ "congruency x block",
                              term == "group1:valence1:block1" ~ "group x congruency x block",
                              term == "group1:Cong1" ~ "group x congruency",
@@ -85,7 +85,7 @@ prep_names_anova <- function(tidy_fit){
                 term == "group:block" ~ "Group x Block",
                 term == "block:s1_color" ~ "Block x Cue",
                 term == "group:block:s1_color" ~ "Group x Block x Color",
-                term == "group:s1_color" ~ "Group x Color",
+                term == "group:s1_color" ~ "Group x Cue",
                 term == "group:valence" ~ "Group x Valence",
                 term == "group:Cong" ~ "Group x Congruency",
                 term == "valence:Cong" ~ "Valence x Congruency",
@@ -131,7 +131,8 @@ model_table <- function(data, single_model = FALSE){
         merge_h(part = "header") %>%
         align(align = "center", part = "all") %>%
         autofit() %>%
-        flextable::fontsize(part = "all", size = 8)
+        flextable::fontsize(part = "all", size = 8) %>% 
+    ftExtra::colformat_md()
 }
 
 # anova_table -------------------------------------------------------------
