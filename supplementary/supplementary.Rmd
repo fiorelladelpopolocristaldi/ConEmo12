@@ -31,7 +31,7 @@ output:
 
 ```{r setup, include=FALSE, cache=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
-                      cache = TRUE,
+                      cache = FALSE,
                       message = FALSE,
                       warning = FALSE,
                       fig.align = "center",
@@ -176,6 +176,11 @@ ggplot() +
   ylab("Expectancy (%)")
 ```
 
+## Discussion (Experiment 1 exploratory model on expectancy ratings)
+
+Results of the exploratory model on expectancy ratings in Experiment 1 showed a significant three-way interaction between group, cue and block $F(1, 7083) = 21.37$ ,$p < 0.001)$. Post-hoc contrasts decomposing the interaction showed that in the CG expectancy ratings to cue~neg~ became slightly less negative, even though not significantly, between block 1 and block 2 ($block 1-2: 0.19$, $SE = 0.90$, $t(7081) = 0.22$, $p = 0.83)$, while expectancy ratings to cue~neu~ became more negative from block 1 to block 2 ($block 1-2: -2.35$, $SE = 0.90$, $t(7081) = -2.62$, $p = 0.009$). In the UG, expectancy ratings to cue~neg~ became more negative between block 1 and block 2 ($block 1-2: -3.03$, $SE = 1.00$, $t(7073) = -3.04$, $p = 0.002$), while expectancy ratings to cue~neu~ became less negative from block 1 to block 2 ($block 1-2: 3.20$, $SE = 1.00$, $t(7073) = 3.21$, $p = 0.001$).
+Thus, results suggest that both groups learn the new 75% contingencies of the test phase, and they adapt their expectancy ratings accordingly. In fact, the CG shows progressively less extreme expectancy ratings as the test phase proceeds, proving that they transitioned from a more reliable predictive context (100%, experienced during the learning phase, according to which they generate their expectancies in the first half of the test phase) to a new, less reliable context (75%, experienced during the test phase, according to which they adapt their expectancies as the test phase proceeds). The UG, instead, shows progressively more extreme ratings as the test phase progresses, proving that they transitioned from a less reliable predictive context (50%, experienced during the learning phase, according to which they generate their expectancies in the first half of the test phase) to a new, more reliable context (75%, experienced during the test phase, according to which they adapt their expectancies as the test phase proceeds).
+
 # Experiment 2
 
 ## Stimuli
@@ -202,7 +207,7 @@ expl_auditory$exp_mods_time$mods$fit_exp_block %>%
 ```
 
 ```{r tableS9}
-expl_auditory$exp_mods_time$mods$fit_exp_block %>% 
+expl_visual$exp_mods_time$mods$fit_exp_block %>% 
   tidy_anova() %>% 
   mutate(mod = "fit_exp") %>% 
   prep_names_anova() %>% 
@@ -262,3 +267,8 @@ ggplot() +
   scale_fill_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
   ylab("Expectancy (%)")
 ```
+
+## Discussion (Experiment 1 exploratory model on expectancy ratings)
+
+Results of the exploratory model on expectancy ratings in Experiment 1 showed a significant three-way interaction between group, cue and block $F(1, 7083) = 21.37$ ,$p < 0.001)$. Post-hoc contrasts decomposing the interaction showed that in the CG expectancy ratings to cue~neg~ became slightly less negative, even though not significantly, between block 1 and block 2 ($block 1-2: 0.19$, $SE = 0.90$, $t(7081) = 0.22$, $p = 0.83)$, while expectancy ratings to cue~neu~ became more negative from block 1 to block 2 ($block 1-2: -2.35$, $SE = 0.90$, $t(7081) = -2.62$, $p = 0.009$). In the UG, expectancy ratings to cue~neg~ became more negative between block 1 and block 2 ($block 1-2: -3.03$, $SE = 1.00$, $t(7073) = -3.04$, $p = 0.002$), while expectancy ratings to cue~neu~ became less negative from block 1 to block 2 ($block 1-2: 3.20$, $SE = 1.00$, $t(7073) = 3.21$, $p = 0.001$).
+Thus, results suggest that both groups learn the new 75% contingencies of the test phase, and they adapt their expectancy ratings accordingly. In fact, the CG shows progressively less extreme expectancy ratings as the test phase proceeds, proving that they transitioned from a more reliable predictive context (100%, experienced during the learning phase, according to which they generate their expectancies in the first half of the test phase) to a new, less reliable context (75%, experienced during the test phase, according to which they adapt their expectancies as the test phase proceeds). The UG, instead, shows progressively more extreme ratings as the test phase progresses, proving that they transitioned from a less reliable predictive context (50%, experienced during the learning phase, according to which they generate their expectancies in the first half of the test phase) to a new, more reliable context (75%, experienced during the test phase, according to which they adapt their expectancies as the test phase proceeds).
