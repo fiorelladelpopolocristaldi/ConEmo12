@@ -2,7 +2,7 @@
 output: github_document
 ---
 
-```{r packages, echo = FALSE}
+```{r packages, echo = FALSE, message=FALSE, warning=FALSE}
 library(magrittr)
 devtools::load_all()
 ```
