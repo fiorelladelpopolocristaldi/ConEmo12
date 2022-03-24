@@ -80,11 +80,12 @@ prep_names_anova <- function(tidy_fit){
         mutate(
             term = case_when(
                 term == "group" ~ "Group",
+                term == "block" ~ "Block",
                 term == "valence" ~ "Valence",
                 term == "s1_color" ~ "Cue",
                 term == "group:block" ~ "Group x Block",
                 term == "block:s1_color" ~ "Block x Cue",
-                term == "group:block:s1_color" ~ "Group x Block x Color",
+                term == "group:block:s1_color" ~ "Group x Block x Cue",
                 term == "group:s1_color" ~ "Group x Cue",
                 term == "group:valence" ~ "Group x Valence",
                 term == "group:Cong" ~ "Group x Congruency",
