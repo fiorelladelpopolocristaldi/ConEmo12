@@ -1,4 +1,6 @@
 
+    ## ℹ Loading ConEmo12
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # Repository
@@ -80,21 +82,37 @@ specific trial.
 
 # Packages
 
--   `tidyverse`
+-   `devtools`
+-   `rmarkdown`
+-   `cowplot`
+-   `ggtext`
+-   `rlang`
+-   `broom.mixed`
+-   `dplyr`
+-   `flextable`
+-   `ftExtra`
+-   `influence.ME`
+-   `MuMIn`
+-   `cli`
 -   `here`
+-   `renv`
+-   `tibble`
+-   `magrittr`
+-   `knitr`
+-   `broom`
+-   `effects`
+-   `emmeans`
+-   `ggh4x`
 -   `lme4`
 -   `lmerTest`
--   `influence.ME`
+-   `tidyverse`
 -   `Routliers`
--   `effects`
--   `broom`
--   `broom.mixed`
--   `emmeans`
 -   `ggeffects`
--   `cowplot`
 -   `ggthemes`
--   `flextable`
 -   `officer`
+-   `readxl`
+-   `stringr`
+-   `bookdown`
 
 # Session Info
 

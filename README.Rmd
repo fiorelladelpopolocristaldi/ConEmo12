@@ -4,6 +4,7 @@ output: github_document
 
 ```{r packages, echo = FALSE}
 library(magrittr)
+devtools::load_all()
 ```
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
