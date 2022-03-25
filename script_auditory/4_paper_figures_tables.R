@@ -103,7 +103,10 @@ eff_arr_pre <- get_effects(all_table$models$mod_list_pre$fit_arr,
 
 dat_plot_pre <- bind_rows(eff_exp_pre, eff_val_pre, eff_arr_pre) %>%
     clean_names_plot(., mod = "prereg") %>%
-    unite(cond, valence, s1_color, sep = "")
+    unite(cond, valence, s1_color, sep = "") %>% 
+    mutate(cond = ifelse(resp == "Expectancy",
+                         sprintf("Cue<sub>%s</sub>", cond),
+                         sprintf("S2<sub>%s</sub>", cond)))
 
 pre_plot <- box_plot(dat_plot_pre, cond)
 
