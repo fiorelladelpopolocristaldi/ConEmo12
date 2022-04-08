@@ -54,7 +54,7 @@ anova_models <- map(mods, function(x) broom.mixed::tidy(anova(x)))
 
 # Post-Hoc Contrast -------------------------------------------------------
 
-post_fit_exp <- get_contrast_and_effect_size(fit_exp, term = "s1_color|group", sd = "total")
+post_fit_exp <- get_contrast_and_effect_size(fit_exp, term = "group|s1_color", sd = "total")
 post_fit_val <- get_contrast_and_effect_size(fit_val, term = "group|valence", sd = "total")
 post_fit_arr <- get_contrast_and_effect_size(fit_arr, term = "group|valence", sd = "total")
 
