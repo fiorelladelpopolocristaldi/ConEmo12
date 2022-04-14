@@ -27,6 +27,8 @@ run_script <- function(file, analysis = c("visual", "auditory", "1vs2")){
   
   suppressMessages(suppressWarnings(source(here::here(paste0("script_", analysis), file))))
   
+  clean_env()
+  
   cli::cli_alert_success(paste(fun_name, "finished!"))
   
 }
@@ -44,6 +46,13 @@ session_info <- function(){
     )
   )
   
+}
+
+
+# clean_env ---------------------------------------------------------------
+
+clean_env <- function(){
+  rm(list = ls(envir = .GlobalEnv), envir = .GlobalEnv)
 }
 
 # conditional -------------------------------------------------------------
