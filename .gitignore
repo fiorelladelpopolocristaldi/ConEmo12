@@ -49,3 +49,4 @@ po/*~
 outfile.md
 
 *_files/
+data/**/raw/
