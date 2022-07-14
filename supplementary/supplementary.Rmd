@@ -147,33 +147,42 @@ expl_visual$exp_mods_time$mods$fit_exp_block %>%
 
 ### Trials
 
-```{r figureS2, fig.cap="Relationship between trials, group (CG vs. UG) and cue ($cue_{neg}$ vs. $cue_{neu}$) on expectancy ratings for Experiment 1. For each subject and group a loess regression is fitted in order to represent the non-linear pattern. Furthermore, given the non-linearity we did not report the linear mixed-model analysis."}
+```{r figureS2, fig.cap="Relationship between trials, group (CG vs. UG) and cue ($cue_{neg}$ vs. $cue_{neu}$) on expectancy ratings for Experiment 1. For each subject and group a loess regression is fitted using the internal `ggplot2::stat_smooth()` function in order to represent the non-linear pattern. Furthermore, given the non-linearity we did not report the linear mixed-model analysis."}
 dat_exp_visual <- dat_visual %>% filter(cond == "exp")
 
 dat_exp_visual_summary <- dat_exp_visual %>% 
   group_by(trial_cond, s1_color, group) %>% 
   summarise(.mean = mean(exprating))
 
-ggplot() +
+p1_exp_visual <- ggplot() +
   geom_line(data = dat_exp_visual,
             aes(x = trial_cond, y = exprating, group = workerId, color = group),
             stat="smooth",
             method = "loess",
-            alpha = 0.15,
-            size = 0.8) +
-  geom_line(data = dat_exp_visual_summary,
-            aes(x = trial_cond, y = .mean, color = group),
-            stat="smooth",
-            size = 2,
-            method = "loess",
-            alpha = 1) +
+            alpha = 0.5,
+            size = 1) +
   facet_grid(~s1_color) +
   theme_paper() +
   xlab("Expectancy") +
   scale_y_continuous(breaks=seq(0, 100, 20), limits=c(-10, 115)) +
-  scale_color_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
-  scale_fill_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
+  scale_color_manual(values=c("#4DCA87", "#F09A0F")) +
   ylab("Expectancy (%)")
+
+p2_exp_visual <- ggplot() +
+  geom_smooth(data = dat_exp_visual_summary,
+            aes(x = trial_cond, y = .mean, color = group, fill = group),
+            method = "loess",
+            se = TRUE) +
+  facet_grid(~s1_color) +
+  theme_paper() +
+  xlab("Expectancy") +
+  scale_y_continuous(breaks=seq(0, 100, 20), limits=c(-10, 115)) +
+  scale_color_manual(values=c("#4DCA87", "#F09A0F")) +
+  scale_fill_manual(values=c("#4DCA87", "#F09A0F")) +
+  ylab("Expectancy (%)") +
+  theme(strip.text = element_blank())
+
+cowplot::plot_grid(p1_exp_visual, p2_exp_visual, nrow = 2)
 ```
 
 ## Discussion (Experiment 1 exploratory model on expectancy ratings)
@@ -239,7 +248,7 @@ expl_auditory$exp_mods_time$mods$fit_exp_block %>%
 
 ### Trials
 
-```{r figureS4, fig.cap="Relationship between trials, group (CG vs. UG) and cue ($cue_{neg}$ vs. $cue_{neu}$) on expectancy ratings for Experiment 2. For each subject and group a loess regression is fitted in order to represent the non-linear pattern. Furthermore, given the non-linearity we did not reported the linear mixed-model analysis."}
+```{r figureS4, fig.cap="Relationship between trials, group (CG vs. UG) and cue ($cue_{neg}$ vs. $cue_{neu}$) on expectancy ratings for Experiment 2. On the top, for each subject and group a loess regression is fitted using the internal `ggplot2::stat_smooth()` function in order to represent the non-linear pattern. On the bottom, we applied the same approach at the group level. Furthermore, given the non-linearity we did not reported the linear mixed-model analysis."}
 
 dat_exp_auditory <- dat_auditory %>% filter(cond == "exp")
 
@@ -247,25 +256,35 @@ dat_exp_auditory_summary <- dat_exp_auditory %>%
   group_by(trial_cond, s1_color, group) %>% 
   summarise(.mean = mean(exprating))
 
-ggplot() +
+p1_exp_auditory <- ggplot() +
   geom_line(data = dat_exp_auditory,
             aes(x = trial_cond, y = exprating, group = workerId, color = group),
             stat="smooth",
             method = "loess",
-            alpha = 0.15,
-            size = 0.8) +
-  geom_line(data = dat_exp_auditory_summary,
-            aes(x = trial_cond, y = .mean, color = group),
-            stat="smooth",
-            size = 2,
-            method = "loess",
-            alpha = 1) +
+            alpha = 0.5,
+            size = 1) +
   facet_grid(~s1_color) +
   theme_paper() +
+  xlab("Expectancy") +
   scale_y_continuous(breaks=seq(0, 100, 20), limits=c(-10, 115)) +
-  scale_color_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
-  scale_fill_manual(name = "", values=c("#4DCA87", "#F09A0F")) +
+  scale_color_manual(values=c("#4DCA87", "#F09A0F")) +
   ylab("Expectancy (%)")
+
+p2_exp_auditory <- ggplot() +
+  geom_smooth(data = dat_exp_auditory_summary,
+            aes(x = trial_cond, y = .mean, color = group, fill = group),
+            method = "loess",
+            se = TRUE) +
+  facet_grid(~s1_color) +
+  theme_paper() +
+  xlab("Expectancy") +
+  scale_y_continuous(breaks=seq(0, 100, 20), limits=c(-10, 115)) +
+  scale_color_manual(values=c("#4DCA87", "#F09A0F")) +
+  scale_fill_manual(values=c("#4DCA87", "#F09A0F")) +
+  ylab("Expectancy (%)") +
+  theme(strip.text = element_blank())
+
+cowplot::plot_grid(p1_exp_auditory, p2_exp_auditory, nrow = 2)
 ```
 
 ## Discussion (Experiment 2 exploratory model on expectancy ratings)
