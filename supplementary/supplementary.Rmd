@@ -95,7 +95,12 @@ tab_stimuli$table_2 %>% customize_table(caption = "Means (M), standard deviation
 ```
 
 ```{r tableS3}
-tab_cond %>% customize_table(caption = "Trials per experimental condition in the learning and test phases. For each phase and group (CG = certain group, UG = uncertain group) we report the S1 color (S1), the S2 valence (S2), the S1-S2 congruency (%) and the number of trials out of total (N). For the test phase we also report the predictive meaning of the cue according to new contingencies (Cue; Cueneg = cue preceding negative S2s, Cueneu = cue preceding neutral S2s), and the S2 congruency (Cong; Con = congruent, NCon = incongruent). Color-valence pairings were counterbalanced between subjects."
+tab_cond %>% 
+  merge_at(i = 1:2, j = 4) %>% 
+  merge_at(i = 3:4, j = 4) %>% 
+  merge_at(i = 1:2, j = 5) %>% 
+  merge_at(i = 3:4, j = 5) %>% 
+  customize_table(caption = "Trials per experimental condition in the learning and test phases. For each phase and group (CG = certain group, UG = uncertain group) we report the S1 color (S1), the S2 valence (S2), the S1-S2 congruency (%) and the number of trials out of total (N). For the test phase we also report the predictive meaning of the cue according to new contingencies (Cue; Cueneg = cue preceding negative S2s, Cueneu = cue preceding neutral S2s), and the S2 congruency (Cong; Con = congruent, NCon = incongruent). Color-valence pairings were counterbalanced between subjects."
 )
 ```
 
