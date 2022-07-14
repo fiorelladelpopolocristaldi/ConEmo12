@@ -180,7 +180,7 @@ emmeans_tab <- tibble(
     mutate(mod = names(emmeans),
            tab = map(emmeans, table_emmeans)) %>%
     unnest(tab) %>%
-    select(mod, group, term, contrast, estimate, std.error, df, conf.low,
+    select(mod, term, contrast, estimate, std.error, df, conf.low,
            conf.high, statistic, p.value, effect.size_es)
 
 saveRDS(emmeans_tab, file = here("objects", "obj_auditory", "emmeans_tab_prereg.rds"))
