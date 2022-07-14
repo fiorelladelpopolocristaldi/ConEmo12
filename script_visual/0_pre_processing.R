@@ -13,32 +13,11 @@ library(here)
 
 data_path <- here("data", "data_visual")
 
-dat <- read.csv(here(data_path, "raw", "dat.csv"),
-                sep = ";", header = T) %>% tibble() # full dataset
-id <- read.csv(here(data_path, "raw", "id.csv"),
-               sep = ";", header = T) %>% tibble() # to keep subjects
-prolific <- read.csv(here(data_path, "raw", "prolific.csv"),
-                     sep = ";", header = T) %>% tibble() # prolific data
-
-# Data Cleaning -----------------------------------------------------------
-
-dat_clean <- dat %>% 
-    filter(workerId != "12456") %>% # removing subject with duplicate session
-    filter(PROLIFIC_PID %in% id$PROLIFIC_PID) %>%  # filtering good subjects from the main dataset
-    select(-c(sex, age, IUS_tot, IUS_prospective, IUS_inhibitory)) # removing columns for joining see https://r4ds.had.co.nz/relational-data.html
-
-prolific_clean <- prolific %>% 
-    rename("sex" = Sex) %>% 
-    filter(PROLIFIC_PID %in% id$PROLIFIC_PID) # filtering good subjects
-
-# Adding sex and gender and questionnaires
-
-dat_clean <- dat_clean %>% 
-    left_join(., prolific_clean %>% select(PROLIFIC_PID, age, sex), by = "PROLIFIC_PID")
+dat <- read_rds(here(data_path, "dat_raw.rds"))
 
 # Creating Trial indexes --------------------------------------------------
 
-dat_clean <- dat_clean %>% 
+dat_clean <- dat %>%
     group_by(workerId) %>% 
     mutate(trial_order = 1:n(), # this is the trial order in temporal terms
            block = ifelse(trial_order <= 40, 1, 2), # this is the block = 1 first 40 trials, block = 2 41 to 80 trial
@@ -46,7 +25,6 @@ dat_clean <- dat_clean %>%
     group_by(workerId, cond) %>% 
     mutate(trial_cond = 1:n()) %>% # create trials from 1 to 20 for each condition (valrating, arrating) * valence
     ungroup()
-
 
 # Color Variable ----------------------------------------------------------
 
@@ -70,8 +48,7 @@ dat_clean_final <- dat_clean %>%
     rename("valence" = S2_val,
            "group" = GROUP,
            "valrating" = samvalrating,
-           "arrating" = samarrating,
-           "prolific_id" = PROLIFIC_PID) %>%
+           "arrating" = samarrating) %>% 
     mutate(s1_color = factor(s1_color),
            group = factor(group),
            valence = factor(valence),
@@ -85,7 +62,7 @@ dat_clean_final <- dat_clean %>%
     
     # select relevant variables
     
-    select(workerId, prolific_id, group, cond, valence, exprating, valrating, 
+    select(workerId, group, cond, valence, exprating, valrating, 
            arrating, block, trial_order, trial_cond, s1_color, Cong, age, sex,
            ITI, ISI, response_time_ISI_EXP, response_time_SAM_valence, 
            response_time_SAM_arousal, timing_S1, timing_S2)
