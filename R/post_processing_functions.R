@@ -210,6 +210,7 @@ table_emmeans <- function(emm_list){
         tibble()
     colnames(eff) <- paste0(colnames(eff), "_es")
     out <- cbind(emm, eff)
+    return(out)
 }
 
 
