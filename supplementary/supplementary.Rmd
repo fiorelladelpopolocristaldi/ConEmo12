@@ -152,7 +152,7 @@ expl_visual$exp_mods_time$mods$fit_exp_block %>%
 
 ### Trials
 
-```{r figureS2, fig.cap="Relationship between trials, group (CG vs. UG) and cue ($cue_{neg}$ vs. $cue_{neu}$) on expectancy ratings for Experiment 1. For each subject and group a loess regression is fitted using the internal `ggplot2::stat_smooth()` function in order to represent the non-linear pattern. Furthermore, given the non-linearity we did not report the linear mixed-model analysis."}
+```{r figureS2, fig.cap="Relationship between trials, group (CG vs. UG) and cue ($cue_{neg}$ vs. $cue_{neu}$) on expectancy ratings for Experiment 1. For each subject and group a loess regression is fitted using the internal $`ggplot2::geom_smooth()`$ function in order to represent the non-linear pattern. Furthermore, given the non-linearity we did not report the linear mixed-model analysis."}
 dat_exp_visual <- dat_visual %>% filter(cond == "exp")
 
 dat_exp_visual_summary <- dat_exp_visual %>% 
@@ -164,7 +164,7 @@ p1_exp_visual <- ggplot() +
             aes(x = trial_cond, y = exprating, group = workerId, color = group),
             stat="smooth",
             method = "loess",
-            alpha = 0.5,
+            alpha = 0.2,
             size = 1) +
   facet_grid(~s1_color) +
   theme_paper() +
@@ -253,7 +253,7 @@ expl_auditory$exp_mods_time$mods$fit_exp_block %>%
 
 ### Trials
 
-```{r figureS4, fig.cap="Relationship between trials, group (CG vs. UG) and cue ($cue_{neg}$ vs. $cue_{neu}$) on expectancy ratings for Experiment 2. On the top, for each subject and group a loess regression is fitted using the internal `ggplot2::stat_smooth()` function in order to represent the non-linear pattern. On the bottom, we applied the same approach at the group level. Furthermore, given the non-linearity we did not reported the linear mixed-model analysis."}
+```{r figureS4, fig.cap="Relationship between trials, group (CG vs. UG) and cue ($cue_{neg}$ vs. $cue_{neu}$) on expectancy ratings for Experiment 2. On the top, for each subject and group a loess regression is fitted using the internal $`ggplot2::stat_smooth()`$ function in order to represent the non-linear pattern. On the bottom, we applied the same approach at the group level. Furthermore, given the non-linearity we did not reported the linear mixed-model analysis."}
 
 dat_exp_auditory <- dat_auditory %>% filter(cond == "exp")
 
@@ -266,7 +266,7 @@ p1_exp_auditory <- ggplot() +
             aes(x = trial_cond, y = exprating, group = workerId, color = group),
             stat="smooth",
             method = "loess",
-            alpha = 0.5,
+            alpha = 0.2,
             size = 1) +
   facet_grid(~s1_color) +
   theme_paper() +
